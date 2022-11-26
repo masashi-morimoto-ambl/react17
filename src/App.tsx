@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { Pagination } from './components/Pagination/Pagination';
+import { Cell, List, Pagination } from './components';
 
 function App() {
   return (
@@ -12,6 +12,18 @@ function App() {
         onPrev={() => {}}
         onNext={() => {}}
       />
+      <List isHeader>
+        <Cell>カラム１</Cell>
+        <Cell>カラム２</Cell>
+        <Cell>カラム３</Cell>
+        <Cell>カラム４</Cell>
+      </List>
+      <List>
+        <Cell>データ１</Cell>
+        <Cell>データ２</Cell>
+        <Cell>データ３</Cell>
+        <Cell>データ４</Cell>
+      </List>
     </div>
   );
 }
