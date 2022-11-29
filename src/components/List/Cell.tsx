@@ -3,6 +3,6 @@ type Props = {
 }
 export const Cell = (props: Props) => {
   return (
-    <p className="py-3 px-6">{props.children}</p>
+    <p className="py-3 px-6 break-words">{props.children}</p>
   )
 }
