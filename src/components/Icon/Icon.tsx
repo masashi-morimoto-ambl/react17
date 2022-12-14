@@ -20,7 +20,7 @@ export const Icon = (props: Props) => {
   const Icons = ICONS[name]
   const color = disabled ? 'text-gray-200' : 'text-gray-500'
   return (
-    <button className={`${className} ${!disabled && 'hover:bg-gray-100 hover:cursor-pointer'} rounded-full p-1`}>
+    <button className={`${className} rounded-full p-1`}>
       <Icons name={name} color={color} />
     </button>
   )

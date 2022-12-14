@@ -24,6 +24,6 @@ const getItems = async (params: {
   return response
 }
 
-export const itemRepository = {
+export const qiitaRepository = {
   getItems,
 }

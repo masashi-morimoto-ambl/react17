@@ -10,12 +10,12 @@ type Props = {
 }
 
 export const Pagination = (props: Props) => {
-  const { countPerPage = 20 } = props
+  const { pageNo, totalCount, countPerPage = 20 } = props
 
   const isFirstPage = props.pageNo === 1
   const isLastPage = countPerPage * props.pageNo >= props.totalCount
 
-  const begin = countPerPage * (props.pageNo - 1) + 1
+  const totalPage = Math.ceil(totalCount/countPerPage)
 
   const disabledLeft = isFirstPage
   const disabledRight = isLastPage
@@ -23,8 +23,8 @@ export const Pagination = (props: Props) => {
   return (
     <div className={`${props.className} flex justify-end items-center`}>
       <div className="right-3">
-        <p className="text-xl">
-          {begin}/{props.totalCount}ページ
+        <p className="text-xl mr-2">
+          {pageNo}/{totalPage}ページ
         </p>
       </div>
       <div className="flex gap-2 items-center">
