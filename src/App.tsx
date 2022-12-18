@@ -1,14 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import { Cell, Icon, List, Pagination } from './components';
-import { useQiitaItemsState } from './hooks/useQiitaItemsState';
-import { GetItemSchema } from './models';
-import { qiitaRepository } from './repositories/qiita';
-
-type SearchParam = {
-  page: number
-  perPage: number
-}
+import { useQiitaItemsState, useSearchParamsState } from './hooks';
 
 // １ページに表示する記事数
 const COUNT_PER_PAGE = 20
@@ -17,12 +10,9 @@ const App = () => {
   // 取得アイテムの総数
   const [totalCount, setTotalCount] = useState(1000)
 
-  const [searchParams, setSearchParams] = useState({
-    page: 1,
-    perPage: COUNT_PER_PAGE,
-  })
+  const { searchParamsState, setSearchParamsState } = useSearchParamsState()
 
-  const {data: qiitaItems, isLoading} = useQiitaItemsState(searchParams)
+  const {data: qiitaItems, isLoading} = useQiitaItemsState(searchParamsState)
 
   const getNumber = (index: number, pageNumber: number) => 
     index + 1 + (pageNumber - 1) * COUNT_PER_PAGE
@@ -39,20 +29,20 @@ const App = () => {
       <div className='w-4/5 mx-auto'>
         <div className='text-right py-3'>
           <Pagination
-            pageNo={searchParams.page}
+            pageNo={searchParamsState.page}
             totalCount={totalCount}
             countPerPage={COUNT_PER_PAGE}
             onPrev={() => {
-              setSearchParams(prev => ({
-                ...prev,
-                page: prev.page - 1 < 1 ? prev.page : prev.page - 1
-              }))
+              setSearchParamsState({
+                ...searchParamsState,
+                page: searchParamsState.page - 1 < 1 ? searchParamsState.page : searchParamsState.page - 1
+              })
             }}
             onNext={() => {
-              setSearchParams(prev => ({
-                ...prev,
-                page: prev.page + 1 > totalCount ? totalCount : prev.page + 1,
-              }))
+              setSearchParamsState({
+                ...searchParamsState,
+                page: searchParamsState.page + 1 > totalCount ? totalCount : searchParamsState.page + 1,
+              })
             }}
           />
         </div>
@@ -69,7 +59,7 @@ const App = () => {
           qiitaItems?.data?.map((v, index) => (
             <div key={v.id}>
               <List>
-                <Cell>{getNumber(index, searchParams.page)}</Cell>
+                <Cell>{getNumber(index, searchParamsState.page)}</Cell>
                 <Cell>{v.title}</Cell>
                 <Cell>{v.user.name || 'No Name'}</Cell>
                 <Cell><a className='text-blue-600' href={v.url} target="_blank" rel="noopener noreferrer">{v.url}</a></Cell>
