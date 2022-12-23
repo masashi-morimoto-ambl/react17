@@ -3,10 +3,16 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { SWRConfig } from 'swr';
+import { localStorageProvider } from './lib';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <SWRConfig 
+      value={{ provider: localStorageProvider }}
+    >
+      <App />
+    </SWRConfig>
   </React.StrictMode>,
   document.getElementById('root')
 );
