@@ -1,7 +1,7 @@
 import useSWR from "swr"
 
 
-type SearchParamsType = {
+export type SearchParamsType = {
   page: number
   perPage: number
 }

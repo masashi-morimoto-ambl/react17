@@ -1,27 +1,41 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import { Cell, Icon, List, Pagination } from './components';
-import { useQiitaItemsState, useSearchParamsState } from './hooks';
+import { SearchParamsType, useQiitaItemsState, useSearchParamsState } from './hooks';
 
 // １ページに表示する記事数
 const COUNT_PER_PAGE = 20
+
+const Page = ({ searchParams }: { searchParams: SearchParamsType }) => {
+  const {data: qiitaItems, isLoading} = useQiitaItemsState(searchParams)
+
+  const getNumber = (index: number, pageNumber: number) => 
+    index + 1 + (pageNumber - 1) * COUNT_PER_PAGE
+
+  return isLoading ? (
+    <p>読み込み中...</p>
+  ):(
+    <>
+      {qiitaItems.data.map((v, index) => (
+        <div key={v.id}>
+          <List>
+            <Cell>{getNumber(index, searchParams.page)}</Cell>
+            <Cell>{v.title}</Cell>
+            <Cell>{v.user.name || 'No Name'}</Cell>
+            <Cell><a className='text-blue-600' href={v.url} target="_blank" rel="noopener noreferrer">{v.url}</a></Cell>
+            <Cell>{v.updated_at}</Cell>
+          </List>
+        </div>   
+      ))}
+    </>
+  )
+}
 
 const App = () => {
   // 取得アイテムの総数
   const [totalCount, setTotalCount] = useState(1000)
 
   const { searchParamsState, setSearchParamsState } = useSearchParamsState()
-
-  const {data: qiitaItems, isLoading} = useQiitaItemsState(searchParamsState)
-
-  const getNumber = (index: number, pageNumber: number) => 
-    index + 1 + (pageNumber - 1) * COUNT_PER_PAGE
-
-  useEffect(() => {
-    if(qiitaItems?.totalCount) {
-      setTotalCount(parseInt(qiitaItems.totalCount) || 1000)
-    }
-  },[qiitaItems?.totalCount])
 
   return (
     <div className="App py-10">
@@ -53,21 +67,13 @@ const App = () => {
           <Cell><span className='flex justify-center items-center'>URL<Icon name='openInNew'/></span></Cell>
           <Cell>更新日</Cell>
         </List>
-        {isLoading ? (
-          <p>読み込み中...</p>
-        ):(
-          qiitaItems?.data?.map((v, index) => (
-            <div key={v.id}>
-              <List>
-                <Cell>{getNumber(index, searchParamsState.page)}</Cell>
-                <Cell>{v.title}</Cell>
-                <Cell>{v.user.name || 'No Name'}</Cell>
-                <Cell><a className='text-blue-600' href={v.url} target="_blank" rel="noopener noreferrer">{v.url}</a></Cell>
-                <Cell>{v.updated_at}</Cell>
-              </List>
-            </div>   
-          ))
-        )}
+        <Page searchParams={searchParamsState} />
+        <div className='hidden'>
+          <Page searchParams={{
+            ...searchParamsState,
+            page: searchParamsState.page + 1,
+          }} />
+        </div>
       </div>
     </div>
   );
